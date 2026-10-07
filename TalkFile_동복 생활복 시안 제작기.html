@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동복 생활복 2D 시안 제작기 (후드집업/져지/아노락 & 자수)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Diverse KR/EN/CJK/Varsity/Handwriting Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Black+Han+Sans&family=Cinzel:wght@700;900&family=Do+Hyeon&family=Gaegu:wght@700&family=Gowun+Batang:wght@700&family=Gowun+Dodum&family=Jua&family=Montserrat:ital,wght@0,700;0,900;1,900&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&family=Oswald:wght@700&family=Pacifico&family=Song+Myung&family=Yeon+Sung&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Noto Serif KR', sans-serif;
+            user-select: none;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 0.375rem;
+        }
+        optgroup {
+            font-weight: bold;
+            color: #0284c7;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col overflow-hidden">
+
+    <header class="bg-white border-b border-slate-200 px-5 py-3 flex justify-between items-center z-20 shrink-0 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="bg-sky-600 text-white p-2.5 rounded-xl shadow-md shadow-sky-200">
+                <i class="fa-solid fa-vest text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight flex items-center gap-2 text-slate-900">
+                    리얼핏 동복 생활복 2D 커스텀 스튜디오
+                    <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 bg-sky-50 text-sky-600 border border-sky-200 rounded-full">School Winter Casual Uniform</span>
+                </h1>
+                <p class="text-xs text-slate-500">후드집업 / 카라 져지 / 아노락 플리스 스타일 선택 & 학교 엠블럼·자수·배색 정밀 도면 시뮬레이터</p>
+            </div>
+        </div>
+
+        <!-- Header Right Quick Actions -->
+        <div class="flex items-center gap-2">
+            <button id="btn-reset" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition border border-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate-left"></i> 초기화
+            </button>
+            <button id="btn-export-2d" class="px-3.5 py-2 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-semibold rounded-lg transition border border-sky-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-file-image"></i> 2D 도면 내보내기
+            </button>
+            <button id="btn-export-spec" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-lg transition border border-emerald-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-file-invoice"></i> 제작 명세서
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+
+        <aside class="w-full md:w-96 bg-white border-r border-slate-200 flex flex-col z-10 shrink-0 h-1/2 md:h-auto overflow-hidden shadow-sm">
+            
+            <!-- Customization Navigation Tabs -->
+            <div class="flex border-b border-slate-200 bg-slate-50 text-xs font-medium">
+                <button data-tab="type" class="tab-btn active flex-1 py-3 text-center border-b-2 border-sky-600 text-sky-600 font-bold flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-shirt text-sm"></i> 유형 & 배색
+                </button>
+                <button data-tab="upload" class="tab-btn flex-1 py-3 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-shield-cat text-sm"></i> 로고/엠블럼
+                </button>
+                <button data-tab="text" class="tab-btn flex-1 py-3 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-font text-sm"></i> 학번/자수/이름
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4">
+
+                <!-- TAB 1: UNIFORM TYPE & COLORS -->
+                <div id="tab-type" class="tab-content space-y-4">
+                    
+                    <!-- Uniform Style Selector -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between items-center">
+                            <span>1. 생활복 스타일 선택</span>
+                            <span class="text-[10px] text-sky-600 font-normal">전국 학교 대표 3종 디자인</span>
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setUniformType('hoodie')" id="type-btn-hoodie" class="type-select-btn p-2.5 rounded-xl border-2 border-sky-600 bg-sky-50 text-sky-900 font-bold text-xs flex flex-col items-center gap-1.5 transition">
+                                <i class="fa-solid fa-vest-patches text-base text-sky-600"></i>
+                                <span>후드 집업</span>
+                            </button>
+                            <button onclick="setUniformType('jersey')" id="type-btn-jersey" class="type-select-btn p-2.5 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 text-slate-700 font-bold text-xs flex flex-col items-center gap-1.5 transition">
+                                <i class="fa-solid fa-shirt text-base text-slate-500"></i>
+                                <span>카라 져지</span>
+                            </button>
+                            <button onclick="setUniformType('anorak')" id="type-btn-anorak" class="type-select-btn p-2.5 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 text-slate-700 font-bold text-xs flex flex-col items-center gap-1.5 transition">
+                                <i class="fa-solid fa-layer-group text-base text-slate-500"></i>
+                                <span>아노락 플리스</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-2 flex items-center justify-between pt-2">
+                        <span>2. 부위별 원단 및 컬러 커스텀</span>
+                    </h2>
+
+                    <!-- Body Fabric Color -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <label class="text-xs font-bold text-slate-700 flex justify-between items-center">
+                            <span>몸통 메인 원단 (Main Fabric)</span>
+                            <input type="text" id="hex-body" value="#1E293B" maxlength="7" class="font-mono text-[11px] text-sky-600 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-right w-20 uppercase font-bold focus:outline-none focus:border-sky-600">
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="picker-body" value="#1E293B" class="w-10 h-10 rounded cursor-pointer border border-slate-300">
+                            <div class="flex flex-wrap gap-1.5 flex-1">
+                                <button onclick="setColor('body', '#1E293B')" class="w-6 h-6 rounded-full bg-[#1E293B] border border-slate-300 shadow-sm hover:scale-110 transition" title="다크 네이비"></button>
+                                <button onclick="setColor('body', '#0F172A')" class="w-6 h-6 rounded-full bg-[#0F172A] border border-slate-300 shadow-sm hover:scale-110 transition" title="딥 블랙"></button>
+                                <button onclick="setColor('body', '#334155')" class="w-6 h-6 rounded-full bg-[#334155] border border-slate-300 shadow-sm hover:scale-110 transition" title="차콜 그레이"></button>
+                                <button onclick="setColor('body', '#065F46')" class="w-6 h-6 rounded-full bg-[#065F46] border border-slate-300 shadow-sm hover:scale-110 transition" title="포레스트 그린"></button>
+                                <button onclick="setColor('body', '#881337')" class="w-6 h-6 rounded-full bg-[#881337] border border-slate-300 shadow-sm hover:scale-110 transition" title="버건디"></button>
+                                <button onclick="setColor('body', '#F8FAFC')" class="w-6 h-6 rounded-full bg-[#F8FAFC] border border-slate-300 shadow-sm hover:scale-110 transition" title="스노우 화이트"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sleeves / Accent Panel Color -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <label class="text-xs font-bold text-slate-700 flex justify-between items-center">
+                            <span>소매 및 어깨 배색 패널 (Sleeves / Accent)</span>
+                            <input type="text" id="hex-sleeves" value="#1E293B" maxlength="7" class="font-mono text-[11px] text-sky-600 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-right w-20 uppercase font-bold focus:outline-none focus:border-sky-600">
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="picker-sleeves" value="#1E293B" class="w-10 h-10 rounded cursor-pointer border border-slate-300">
+                            <div class="flex flex-wrap gap-1.5 flex-1">
+                                <button onclick="setColor('sleeves', '#1E293B')" class="w-6 h-6 rounded-full bg-[#1E293B] border border-slate-300 shadow-sm hover:scale-110 transition" title="몸통 동일"></button>
+                                <button onclick="setColor('sleeves', '#F8FAFC')" class="w-6 h-6 rounded-full bg-[#F8FAFC] border border-slate-300 shadow-sm hover:scale-110 transition" title="크림 화이트"></button>
+                                <button onclick="setColor('sleeves', '#94A3B8')" class="w-6 h-6 rounded-full bg-[#94A3B8] border border-slate-300 shadow-sm hover:scale-110 transition" title="멜란지 그레이"></button>
+                                <button onclick="setColor('sleeves', '#0F172A')" class="w-6 h-6 rounded-full bg-[#0F172A] border border-slate-300 shadow-sm hover:scale-110 transition" title="매트 블랙"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Zipper & Trim Color -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <label class="text-xs font-bold text-slate-700 flex justify-between items-center">
+                            <span>지퍼 / 후드 안감 / 포인트 트림 (Zipper & Trim)</span>
+                            <input type="text" id="hex-trim" value="#FFFFFF" maxlength="7" class="font-mono text-[11px] text-sky-600 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-right w-20 uppercase font-bold focus:outline-none focus:border-sky-600">
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="picker-trim" value="#FFFFFF" class="w-10 h-10 rounded cursor-pointer border border-slate-300">
+                            <span class="text-xs text-slate-500">지퍼 라인, 후드 끈, 주머니 테두리</span>
+                        </div>
+                    </div>
+
+                    <!-- Ribbing / Cuff Color -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <label class="text-xs font-bold text-slate-700 flex justify-between items-center">
+                            <span>손목 / 밑단 시보리 니트 (Ribbing / Cuffs)</span>
+                            <input type="text" id="hex-rib" value="#1E293B" maxlength="7" class="font-mono text-[11px] text-sky-600 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-right w-20 uppercase font-bold focus:outline-none focus:border-sky-600">
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="picker-rib" value="#1E293B" class="w-10 h-10 rounded cursor-pointer border border-slate-300">
+                            <span class="text-xs text-slate-500">손목 및 밴드 밴딩</span>
+                        </div>
+                    </div>
+
+                    <!-- Stripe Line Color -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <label class="text-xs font-bold text-slate-700 flex justify-between items-center">
+                            <span>소매 / 옆구리 스포츠 파이핑 라인 (Side Stripe)</span>
+                            <input type="text" id="hex-stripe" value="#38BDF8" maxlength="7" class="font-mono text-[11px] text-sky-600 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-right w-20 uppercase font-bold focus:outline-none focus:border-sky-600">
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="picker-stripe" value="#38BDF8" class="w-10 h-10 rounded cursor-pointer border border-slate-300">
+                            <span class="text-xs text-slate-500">어깨 및 소매 라인 포인트</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: LOGO & EMBLEM UPLOAD -->
+                <div id="tab-upload" class="tab-content hidden space-y-4">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-2 flex items-center justify-between">
+                        <span>학교 로고 / 교장 마크 이미지 패치</span>
+                        <span class="text-[10px] text-sky-600 font-semibold">PNG / JPG 지원</span>
+                    </h2>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">부착 대상 위치 선택</label>
+                        <select id="upload-zone-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:outline-none focus:border-sky-600">
+                            <option value="leftChest">왼쪽 가슴 (Left Chest Emblem)</option>
+                            <option value="rightChest">오른쪽 가슴 (Right Chest Emblem)</option>
+                            <option value="back">등판 중앙 (Back Emblem/School Logo)</option>
+                            <option value="leftSleeve">왼쪽 팔 (Left Sleeve Emblem)</option>
+                            <option value="rightSleeve">오른쪽 팔 (Right Sleeve Emblem)</option>
+                        </select>
+                    </div>
+
+                    <div class="border-2 border-dashed border-slate-300 hover:border-sky-500 rounded-xl p-5 text-center transition bg-slate-50 cursor-pointer relative" id="drop-zone">
+                        <input type="file" id="file-input-logo" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                        <div class="flex flex-col items-center gap-2 pointer-events-none">
+                            <div class="w-10 h-10 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-700">학교 마크 / 로고 이미지 업로드</p>
+                            <p class="text-[11px] text-slate-400">투명 배경 PNG 권장 (최대 10MB)</p>
+                        </div>
+                    </div>
+
+                    <div id="image-adjust-panel" class="hidden bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <span id="uploaded-filename" class="text-xs font-bold text-sky-600 truncate max-w-[180px]">school_logo.png</span>
+                            <button onclick="removeUploadedImage()" class="text-[11px] text-red-500 hover:text-red-700 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i> 제거
+                            </button>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-bold text-slate-700">
+                                <span>크기 (Scale)</span>
+                                <span id="val-img-scale" class="text-sky-600 font-mono">100%</span>
+                            </div>
+                            <input type="range" id="input-img-scale" min="20" max="250" value="100" class="w-full accent-sky-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-bold text-slate-700">
+                                <span>상하 위치 (Vertical)</span>
+                                <span id="val-img-pos-y" class="text-sky-600 font-mono">0</span>
+                            </div>
+                            <input type="range" id="input-img-pos-y" min="-150" max="150" value="0" class="w-full accent-sky-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-bold text-slate-700">
+                                <span>좌우 위치 (Horizontal)</span>
+                                <span id="val-img-pos-x" class="text-sky-600 font-mono">0</span>
+                            </div>
+                            <input type="range" id="input-img-pos-x" min="-100" max="100" value="0" class="w-full accent-sky-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: TEXT & EMBROIDERIES -->
+                <div id="tab-text" class="tab-content hidden space-y-4">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-2 flex items-center justify-between">
+                        <span>위치별 학교명 / 학번 / 이름 자수</span>
+                        <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">한자(漢字)·한글·영문</span>
+                    </h2>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">자수 위치 선택</label>
+                        <select id="text-zone-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800 font-medium focus:outline-none focus:border-sky-600">
+                            <option value="backTop">등 상단 학교명 (Back Top School Name)</option>
+                            <option value="leftChest">왼쪽 가슴 교명/엠블럼 (Left Chest)</option>
+                            <option value="rightChest">오른쪽 가슴 학생 이름 자수 (Right Chest Name Tag)</option>
+                            <option value="backMid">등 중앙 메인 자수 (Back Center Emblem Text)</option>
+                            <option value="backBottom">등 하단 슬로건 (Back Bottom Slogan)</option>
+                            <option value="leftSleeve">왼쪽 팔 학번/클래스 (Left Sleeve Class/Year)</option>
+                            <option value="rightSleeve">오른쪽 팔 교훈/슬로건 (Right Sleeve Motto)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1 flex justify-between items-center">
+                                <span>문구 내용 입력</span>
+                                <span class="text-[10px] text-sky-600 font-normal">한자(漢字) 키보드 지원</span>
+                            </label>
+                            <input type="text" id="input-text-val" placeholder="예: 韓國高等學校, KOREA HIGH, 10215 홍길동" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-800 focus:outline-none focus:border-sky-600">
+                            <p class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-sky-500"></i> 교명(한자/한글), 학번/이름 네임텍 자수 입력이 가능합니다.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">자수 폰트 서체 선택</label>
+                            <select id="input-font-family" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-800 font-medium leading-relaxed">
+                                <optgroup label="🏛️ 한글/한자 전통 서예 & 교명 명조">
+                                    <option value="'Song Myung', 'Noto Serif KR', serif">송명체 (전통 정갈한 한자/명조)</option>
+                                    <option value="'Gowun Batang', 'Noto Serif KR', serif">고운바탕 (품격있는 단정한 명조)</option>
+                                    <option value="'Noto Serif KR', serif">Noto Serif KR (정통 학교 자수체)</option>
+                                    <option value="'Yeon Sung', cursive">연성체 (붓글씨 캘리그래피)</option>
+                                </optgroup>
+                                <optgroup label="🏢 현대 학교 정돈 고딕 & 네임텍">
+                                    <option value="'Noto Sans KR', sans-serif">Noto Sans KR (표준 네임텍 고딕)</option>
+                                    <option value="'Black Han Sans', sans-serif">블랙한산스 (볼드 임팩트 고딕)</option>
+                                    <option value="'Do Hyeon', sans-serif">도현체 (선명하고 굵은 자수)</option>
+                                    <option value="'Jua', sans-serif">주아체 (친근한 캐주얼)</option>
+                                    <option value="'Gowun Dodum', sans-serif">고운돋움 (부드러운 정돈체)</option>
+                                </optgroup>
+                                <optgroup label="🏈 영문 스포티 / 바시티">
+                                    <option value="'Bebas Neue', sans-serif">Bebas Neue (스포티 바시티 폰트)</option>
+                                    <option value="'Anton', sans-serif">Anton (묵직한 헤드라인)</option>
+                                    <option value="'Montserrat', sans-serif">Montserrat (모던 모던 산세리프)</option>
+                                    <option value="'Oswald', sans-serif">Oswald (스쿨 유니폼 레터링)</option>
+                                    <option value="'Cinzel', serif">Cinzel (학술 로만 체)</option>
+                                </optgroup>
+                                <optgroup label="✍️ 캐주얼 손글씨">
+                                    <option value="'Pacifico', cursive">Pacifico (스트릿 영문 서명체)</option>
+                                    <option value="'Gaegu', cursive">개구체 (자유 손글씨)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">글자 색상</label>
+                                <input type="color" id="input-text-color" value="#ffffff" class="w-full h-8 rounded bg-white cursor-pointer border border-slate-300">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">자수 외곽선 테두리</label>
+                                <input type="color" id="input-stroke-color" value="#0F172A" class="w-full h-8 rounded bg-white cursor-pointer border border-slate-300">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between items-center text-xs font-bold text-slate-700">
+                                <span>글자 크기</span>
+                                <span id="val-font-size" class="text-sky-600 font-mono">48px</span>
+                            </div>
+                            <input type="range" id="input-font-size" min="10" max="140" value="48" class="w-full accent-sky-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+
+                        <div class="pt-1 border-t border-slate-200 flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-700">상단 아치형 휘어짐 곡선</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="input-text-arc" class="sr-only peer">
+                                <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-sky-600"></div>
+                            </label>
+                        </div>
+
+                        <div class="space-y-1.5 pt-1 border-t border-slate-200">
+                            <label class="block text-[11px] font-bold text-slate-700">상하 위치 미세 조정</label>
+                            <input type="range" id="input-text-pos-y" min="-180" max="180" value="0" class="w-full accent-sky-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <main class="flex-1 bg-gradient-to-b from-slate-200 via-slate-100 to-slate-200 relative overflow-hidden flex flex-col">
+            
+            <!-- 2D Multi-Angle View Container (4-View Grid) -->
+            <div id="flat-2d-container" class="w-full h-full overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-6xl mx-auto">
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-shirt text-sky-600"></i> [전면] Front View (지퍼/가슴 마크/네임텍)
+                    </span>
+                    <canvas id="flat-canvas-front" width="500" height="500" class="w-full h-auto max-w-[380px] object-contain rounded-lg border border-slate-100 bg-slate-50/50"></canvas>
+                </div>
+
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate text-sky-600"></i> [후면] Back View (학교명/자수)
+                    </span>
+                    <canvas id="flat-canvas-back" width="500" height="500" class="w-full h-auto max-w-[380px] object-contain rounded-lg border border-slate-100 bg-slate-50/50"></canvas>
+                </div>
+
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-hand text-sky-600"></i> [좌측 소매] Left Sleeve (소매 로고/학번)
+                    </span>
+                    <canvas id="flat-canvas-left" width="500" height="500" class="w-full h-auto max-w-[380px] object-contain rounded-lg border border-slate-100 bg-slate-50/50"></canvas>
+                </div>
+
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col items-center">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-hand flip-x text-sky-600"></i> [우측 소매] Right Sleeve (교훈/라인 파이핑)
+                    </span>
+                    <canvas id="flat-canvas-right" width="500" height="500" class="w-full h-auto max-w-[380px] object-contain rounded-lg border border-slate-100 bg-slate-50/50"></canvas>
+                </div>
+            </div>
+
+            <!-- Bottom Left Tip Box -->
+            <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md border border-slate-300 text-slate-600 text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 shadow-lg pointer-events-none z-10">
+                <i class="fa-solid fa-circle-info text-sky-600 text-sm"></i>
+                <span>동복 생활복 <strong>스타일 선택(후드/카라/아노락) 및 자수·로고</strong>가 4면 도면에 실시간 반영됩니다.</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- Offscreen Canvas for Full Export Blueprint -->
+    <div class="hidden">
+        <canvas id="texture-2d-sheet" width="1600" height="1200"></canvas>
+    </div>
+
+    <!-- Notification Toast Box -->
+    <div id="toast" class="fixed top-20 right-6 bg-sky-600 text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-bold flex items-center gap-2.5 transform translate-x-full transition-transform duration-300 z-50">
+        <i class="fa-solid fa-circle-check text-sm"></i>
+        <span id="toast-msg">설정이 업데이트되었습니다.</span>
+    </div>
+
+    <!-- Design Specification Modal -->
+    <div id="spec-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white border border-slate-300 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl text-slate-800">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <h3 class="font-bold text-base text-sky-600 flex items-center gap-2">
+                    <i class="fa-solid fa-file-invoice"></i> 동복 생활복 커스텀 제작 사양서
+                </h3>
+                <button onclick="closeSpecModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="spec-modal-content" class="text-xs space-y-3 font-mono text-slate-700 max-h-96 overflow-y-auto pr-1">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                <button onclick="copySpecToClipboard()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg font-bold transition border border-slate-300">
+                    <i class="fa-solid fa-copy"></i> 복사하기
+                </button>
+                <button onclick="closeSpecModal()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs rounded-lg font-bold transition">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            uniformType: 'hoodie', // 'hoodie', 'jersey', 'anorak'
+            colors: {
+                body: '#1E293B',
+                sleeves: '#1E293B',
+                trim: '#FFFFFF',
+                rib: '#1E293B',
+                stripe: '#38BDF8'
+            },
+            texts: {
+                backTop: { text: '', font: "'Song Myung', 'Noto Serif KR', serif", size: 52, color: '#FFFFFF', stroke: '#0F172A', arc: true, posY: -140 },
+                leftChest: { text: '', font: "'Song Myung', 'Noto Serif KR', serif", size: 38, color: '#FFFFFF', stroke: '#0F172A', arc: false, posY: -20 },
+                rightChest: { text: '', font: "'Noto Sans KR', sans-serif", size: 30, color: '#FFFFFF', stroke: '#0F172A', arc: false, posY: -20 },
+                backMid: { text: '', font: "'Song Myung', 'Noto Serif KR', serif", size: 36, color: '#FFFFFF', stroke: '#0F172A', arc: false, posY: 0 },
+                backBottom: { text: '', font: "'Noto Sans KR', sans-serif", size: 24, color: '#FFFFFF', stroke: '#0F172A', arc: false, posY: 160 },
+                leftSleeve: { text: '', font: "'Song Myung', 'Noto Serif KR', serif", size: 36, color: '#FFFFFF', stroke: '#0F172A', arc: false, posY: -30 },
+                rightSleeve: { text: '', font: "'Song Myung', 'Noto Serif KR', serif", size: 36, color: '#FFFFFF', stroke: '#0F172A', arc: false, posY: -30 }
+            },
+            uploads: {
+                leftChest: { img: null, name: '', scale: 1.0, posX: 0, posY: 0 },
+                rightChest: { img: null, name: '', scale: 1.0, posX: 0, posY: 0 },
+                back: { img: null, name: '', scale: 1.0, posX: 0, posY: 0 },
+                leftSleeve: { img: null, name: '', scale: 1.0, posX: 0, posY: 0 },
+                rightSleeve: { img: null, name: '', scale: 1.0, posX: 0, posY: 0 }
+            }
+        };
+
+        let renderScheduled = false;
+        function updateAllTextures() {
+            if (!renderScheduled) {
+                renderScheduled = true;
+                requestAnimationFrame(() => {
+                    render2DFlatMockups();
+                    renderScheduled = false;
+                });
+            }
+        }
+
+        function setUniformType(type) {
+            state.uniformType = type;
+            
+            // Update UI buttons
+            document.querySelectorAll('.type-select-btn').forEach(btn => {
+                btn.classList.remove('border-sky-600', 'bg-sky-50', 'text-sky-900');
+                btn.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('text-sky-600');
+                    icon.classList.add('text-slate-500');
+                }
+            });
+
+            const activeBtn = document.getElementById(`type-btn-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+                activeBtn.classList.add('border-sky-600', 'bg-sky-50', 'text-sky-900');
+                const icon = activeBtn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('text-slate-500');
+                    icon.classList.add('text-sky-600');
+                }
+            }
+
+            updateAllTextures();
+            showToast(`생활복 스타일이 [${type === 'hoodie' ? '후드 집업' : type === 'jersey' ? '카라 져지' : '아노락 플리스'}]로 변경되었습니다.`);
+        }
+
+        function render2DFlatMockups() {
+            const frontCanvas = document.getElementById('flat-canvas-front');
+            const backCanvas = document.getElementById('flat-canvas-back');
+            const leftCanvas = document.getElementById('flat-canvas-left');
+            const rightCanvas = document.getElementById('flat-canvas-right');
+
+            if (frontCanvas) drawFrontView(frontCanvas);
+            if (backCanvas) drawBackView(backCanvas);
+            if (leftCanvas) drawSleeveView(leftCanvas, 'left');
+            if (rightCanvas) drawSleeveView(rightCanvas, 'right');
+        }
+
+        function drawFrontView(canvas) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // 1. Sleeves
+            ctx.fillStyle = state.colors.sleeves;
+            ctx.strokeStyle = '#00000033';
+            ctx.lineWidth = 2;
+
+            // Left Sleeve
+            ctx.beginPath();
+            ctx.moveTo(135, 140);
+            ctx.lineTo(35, 220);
+            ctx.lineTo(45, 270);
+            ctx.lineTo(165, 245);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Right Sleeve
+            ctx.beginPath();
+            ctx.moveTo(365, 140);
+            ctx.lineTo(465, 220);
+            ctx.lineTo(455, 270);
+            ctx.lineTo(335, 245);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Side Stripes / Piping on sleeves
+            ctx.strokeStyle = state.colors.stripe;
+            ctx.lineWidth = 4;
+            // Left sleeve stripe
+            ctx.beginPath();
+            ctx.moveTo(135, 140);
+            ctx.lineTo(35, 220);
+            ctx.stroke();
+            // Right sleeve stripe
+            ctx.beginPath();
+            ctx.moveTo(365, 140);
+            ctx.lineTo(465, 220);
+            ctx.stroke();
+
+            // Sleeve Cuffs
+            drawAngledRibbing(ctx, 35, 220, 45, 270, 18);
+            drawAngledRibbing(ctx, 465, 220, 455, 270, -18);
+
+            // 2. Torso Body
+            ctx.fillStyle = state.colors.body;
+            ctx.strokeStyle = '#00000033';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(185, 115);
+            ctx.quadraticCurveTo(250, 135, 315, 115);
+            ctx.lineTo(365, 140);
+            ctx.lineTo(335, 245);
+            ctx.lineTo(330, 380);
+            ctx.lineTo(170, 380);
+            ctx.lineTo(165, 245);
+            ctx.lineTo(135, 140);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // 3. Style Details (Hoodie vs Jersey vs Anorak)
+            if (state.uniformType === 'hoodie') {
+                // Hood Structure
+                ctx.fillStyle = state.colors.trim;
+                ctx.beginPath();
+                ctx.moveTo(185, 115);
+                ctx.quadraticCurveTo(250, 135, 315, 115);
+                ctx.quadraticCurveTo(250, 60, 185, 115);
+                ctx.fill();
+                ctx.stroke();
+
+                // Outer Hood Fold
+                ctx.fillStyle = state.colors.body;
+                ctx.beginPath();
+                ctx.moveTo(175, 115);
+                ctx.quadraticCurveTo(250, 50, 325, 115);
+                ctx.quadraticCurveTo(250, 75, 175, 115);
+                ctx.fill();
+                ctx.stroke();
+
+                // Drawstrings
+                ctx.strokeStyle = state.colors.trim;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(230, 120);
+                ctx.lineTo(225, 180);
+                ctx.moveTo(270, 120);
+                ctx.lineTo(275, 180);
+                ctx.stroke();
+
+                // Full Zipper
+                ctx.strokeStyle = state.colors.trim;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(250, 125);
+                ctx.lineTo(250, 380);
+                ctx.stroke();
+
+                // Front Kangaroo Pockets
+                ctx.fillStyle = state.colors.body;
+                ctx.strokeStyle = '#00000033';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(190, 380);
+                ctx.lineTo(190, 310);
+                ctx.lineTo(235, 330);
+                ctx.lineTo(235, 380);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(310, 380);
+                ctx.lineTo(310, 310);
+                ctx.lineTo(265, 330);
+                ctx.lineTo(265, 380);
+                ctx.fill();
+                ctx.stroke();
+
+            } else if (state.uniformType === 'jersey') {
+                // High Collar Zip-Up
+                ctx.fillStyle = state.colors.body;
+                ctx.strokeStyle = '#00000033';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(195, 115);
+                ctx.lineTo(195, 75);
+                ctx.quadraticCurveTo(250, 65, 305, 75);
+                ctx.lineTo(305, 115);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Collar Inner Stripe Accent
+                ctx.strokeStyle = state.colors.stripe;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(195, 85);
+                ctx.quadraticCurveTo(250, 75, 305, 85);
+                ctx.stroke();
+
+                // Full Zipper
+                ctx.strokeStyle = state.colors.trim;
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(250, 70);
+                ctx.lineTo(250, 380);
+                ctx.stroke();
+
+                // Side Zip Pockets
+                ctx.strokeStyle = state.colors.trim;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(185, 300);
+                ctx.lineTo(215, 350);
+                ctx.moveTo(315, 300);
+                ctx.lineTo(285, 350);
+                ctx.stroke();
+
+            } else if (state.uniformType === 'anorak') {
+                // Anorak Chest Block Panel
+                ctx.fillStyle = state.colors.trim;
+                ctx.beginPath();
+                ctx.moveTo(175, 130);
+                ctx.lineTo(325, 130);
+                ctx.lineTo(325, 230);
+                ctx.lineTo(175, 230);
+                ctx.closePath();
+                ctx.fill();
+
+                // Half Zipper
+                ctx.strokeStyle = state.colors.stripe;
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(250, 95);
+                ctx.lineTo(250, 230);
+                ctx.stroke();
+
+                // High Collar
+                ctx.fillStyle = state.colors.body;
+                ctx.beginPath();
+                ctx.moveTo(195, 115);
+                ctx.lineTo(195, 80);
+                ctx.quadraticCurveTo(250, 70, 305, 80);
+                ctx.lineTo(305, 115);
+                ctx.fill();
+                ctx.stroke();
+
+                // Kangaroo Center Pocket Flap
+                ctx.fillStyle = state.colors.body;
+                ctx.fillRect(200, 250, 100, 60);
+                ctx.strokeRect(200, 250, 100, 60);
+            }
+
+            // 4. Bottom Hem Ribbing
+            draw2DRibbingBand(ctx, 170, 380, 160, 35);
+
+            // 5. Overlays (Text & Uploaded Logo)
+            drawTextZone(ctx, state.texts.leftChest, 205, 200);
+            drawImageZone(ctx, state.uploads.leftChest, 205, 200);
+
+            drawTextZone(ctx, state.texts.rightChest, 295, 200);
+            drawImageZone(ctx, state.uploads.rightChest, 295, 200);
+        }
+
+        function drawBackView(canvas) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // 1. Sleeves
+            ctx.fillStyle = state.colors.sleeves;
+            ctx.strokeStyle = '#00000033';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(135, 140);
+            ctx.lineTo(35, 220);
+            ctx.lineTo(45, 270);
+            ctx.lineTo(165, 245);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(365, 140);
+            ctx.lineTo(465, 220);
+            ctx.lineTo(455, 270);
+            ctx.lineTo(335, 245);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Stripes
+            ctx.strokeStyle = state.colors.stripe;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(135, 140);
+            ctx.lineTo(35, 220);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(365, 140);
+            ctx.lineTo(465, 220);
+            ctx.stroke();
+
+            drawAngledRibbing(ctx, 35, 220, 45, 270, 18);
+            drawAngledRibbing(ctx, 465, 220, 455, 270, -18);
+
+            // 2. Back Torso Body
+            ctx.fillStyle = state.colors.body;
+            ctx.beginPath();
+            ctx.moveTo(185, 115);
+            ctx.quadraticCurveTo(250, 105, 315, 115);
+            ctx.lineTo(365, 140);
+            ctx.lineTo(335, 245);
+            ctx.lineTo(330, 380);
+            ctx.lineTo(170, 380);
+            ctx.lineTo(165, 245);
+            ctx.lineTo(135, 140);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // 3. Back Hood / Collar View
+            if (state.uniformType === 'hoodie') {
+                ctx.fillStyle = state.colors.body;
+                ctx.beginPath();
+                ctx.moveTo(185, 115);
+                ctx.quadraticCurveTo(250, 170, 315, 115);
+                ctx.quadraticCurveTo(250, 70, 185, 115);
+                ctx.fill();
+                ctx.stroke();
+            } else if (state.uniformType === 'jersey' || state.uniformType === 'anorak') {
+                ctx.fillStyle = state.colors.body;
+                ctx.beginPath();
+                ctx.moveTo(195, 115);
+                ctx.lineTo(195, 80);
+                ctx.quadraticCurveTo(250, 70, 305, 80);
+                ctx.lineTo(305, 115);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.strokeStyle = state.colors.stripe;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(195, 90);
+                ctx.quadraticCurveTo(250, 80, 305, 90);
+                ctx.stroke();
+            }
+
+            // 4. Bottom Hem Ribbing
+            draw2DRibbingBand(ctx, 170, 380, 160, 35);
+
+            // 5. Back Text & Emblem Overlays
+            drawTextZone(ctx, state.texts.backTop, 250, 200);
+            drawTextZone(ctx, state.texts.backMid, 250, 260);
+            drawImageZone(ctx, state.uploads.back, 250, 260);
+            drawTextZone(ctx, state.texts.backBottom, 250, 340);
+        }
+
+        function drawSleeveView(canvas, side) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // Sleeve Outline
+            ctx.fillStyle = state.colors.sleeves;
+            ctx.strokeStyle = '#00000033';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(170, 90);
+            ctx.quadraticCurveTo(250, 60, 330, 90);
+            ctx.lineTo(320, 380);
+            ctx.lineTo(180, 380);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Side Stripe / Piping Center
+            ctx.strokeStyle = state.colors.stripe;
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(250, 70);
+            ctx.lineTo(250, 380);
+            ctx.stroke();
+
+            // Cuff Ribbing
+            draw2DRibbingBand(ctx, 180, 380, 140, 35);
+
+            // Sleeve Cap Seam
+            ctx.beginPath();
+            ctx.moveTo(170, 90);
+            ctx.quadraticCurveTo(250, 120, 330, 90);
+            ctx.strokeStyle = '#00000015';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Overlays
+            const uploadKey = side === 'left' ? 'leftSleeve' : 'rightSleeve';
+            drawImageZone(ctx, state.uploads[uploadKey], 250, 230);
+
+            const textKey = side === 'left' ? 'leftSleeve' : 'rightSleeve';
+            if (state.texts[textKey]) {
+                drawTextZone(ctx, state.texts[textKey], 250, 230);
+            }
+        }
+
+        // Helper Ribbing Band Renderer
+        function draw2DRibbingBand(ctx, x, y, width, height) {
+            ctx.save();
+            ctx.fillStyle = state.colors.rib;
+            ctx.fillRect(x, y, width, height);
+
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(x, y, width, height);
+            ctx.restore();
+        }
+
+        function drawAngledRibbing(ctx, x1, y1, x2, y2, width) {
+            ctx.save();
+            ctx.fillStyle = state.colors.rib;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x1 + width, y1);
+            ctx.lineTo(x2 + width, y2);
+            ctx.lineTo(x2, y2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawTextZone(ctx, data, centerX, centerY) {
+            if (!data || !data.text) return;
+
+            ctx.save();
+            ctx.translate(centerX, centerY + (data.posY || 0));
+
+            const fontSize = Math.round((data.size || 30) * 0.5);
+            ctx.font = `900 ${fontSize}px ${data.font || 'sans-serif'}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            if (data.arc) {
+                drawArcText(ctx, data.text, 0, 0, 110, data.color, data.stroke, fontSize);
+            } else {
+                if (data.stroke) {
+                    ctx.strokeStyle = data.stroke;
+                    ctx.lineWidth = Math.max(2, fontSize * 0.15);
+                    ctx.strokeText(data.text, 0, 0);
+                }
+                ctx.fillStyle = data.color || '#FFFFFF';
+                ctx.fillText(data.text, 0, 0);
+            }
+
+            ctx.restore();
+        }
+
+        function drawArcText(ctx, text, x, y, radius, color, stroke, fontSize) {
+            ctx.save();
+            const totalChars = text.length;
+            const anglePerChar = Math.min(0.22, Math.max(0.12, 2.2 / totalChars));
+            const startAngle = -((totalChars - 1) * anglePerChar) / 2 - Math.PI / 2;
+
+            for (let i = 0; i < totalChars; i++) {
+                const char = text[i];
+                const angle = startAngle + i * anglePerChar;
+                const charX = x + radius * Math.cos(angle);
+                const charY = y + radius * Math.sin(angle) + radius;
+
+                ctx.save();
+                ctx.translate(charX, charY);
+                ctx.rotate(angle + Math.PI / 2);
+
+                if (stroke) {
+                    ctx.strokeStyle = stroke;
+                    ctx.lineWidth = Math.max(2, fontSize * 0.15);
+                    ctx.strokeText(char, 0, 0);
+                }
+                ctx.fillStyle = color || '#FFFFFF';
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+
+        function drawImageZone(ctx, data, centerX, centerY) {
+            if (!data || !data.img) return;
+
+            ctx.save();
+            const scale = data.scale || 1.0;
+            const posX = data.posX || 0;
+            const posY = data.posY || 0;
+
+            const baseSize = 80;
+            const w = baseSize * scale;
+            const h = (data.img.height / data.img.width) * w;
+
+            ctx.drawImage(data.img, centerX + posX - w / 2, centerY + posY - h / 2, w, h);
+            ctx.restore();
+        }
+
+        function export2DFullSheet() {
+            const canvas = document.getElementById('texture-2d-sheet');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, w, h);
+
+            // Title Header
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 36px "Noto Sans KR", sans-serif';
+            ctx.fillText(`동복 생활복 2D 4면 정밀 도면 (${state.uniformType === 'hoodie' ? '후드 집업' : state.uniformType === 'jersey' ? '카라 져지' : '아노락 플리스'})`, 60, 70);
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = '18px "Noto Sans KR", sans-serif';
+            ctx.fillText(`생성일자: ${new Date().toLocaleDateString('ko-KR')} | 리얼핏 학교 유니폼 2D 스튜디오`, 60, 105);
+
+            // Quadrants
+            const views = [
+                { id: 'flat-canvas-front', title: '[전면] FRONT VIEW', x: 80, y: 150 },
+                { id: 'flat-canvas-back', title: '[후면] BACK VIEW (학교명/자수)', x: 820, y: 150 },
+                { id: 'flat-canvas-left', title: '[좌측 소매] LEFT SLEEVE', x: 80, y: 660 },
+                { id: 'flat-canvas-right', title: '[우측 소매] RIGHT SLEEVE', x: 820, y: 660 }
+            ];
+
+            views.forEach(v => {
+                const srcCanvas = document.getElementById(v.id);
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 20px "Noto Sans KR", sans-serif';
+                ctx.fillText(v.title, v.x, v.y - 15);
+                ctx.drawImage(srcCanvas, v.x, v.y, 700, 460);
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.strokeRect(v.x, v.y, 700, 460);
+            });
+
+            const link = document.createElement('a');
+            link.download = `동복생활복_2D도면_${state.uniformType}_${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            showToast('2D 4면 통합 생활복 도면 이미지(PNG)가 다운로드되었습니다!');
+        }
+
+        function initUIEvents() {
+            // Tab Switcher
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => {
+                        b.classList.remove('active', 'border-sky-600', 'text-sky-600', 'font-bold');
+                        b.classList.add('border-transparent', 'text-slate-500');
+                    });
+                    btn.classList.add('active', 'border-sky-600', 'text-sky-600', 'font-bold');
+                    btn.classList.remove('border-transparent', 'text-slate-500');
+
+                    const target = btn.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                    document.getElementById(`tab-${target}`).classList.remove('hidden');
+                });
+            });
+
+            // Color Pickers
+            bindColorPicker('picker-body', 'hex-body', 'body');
+            bindColorPicker('picker-sleeves', 'hex-sleeves', 'sleeves');
+            bindColorPicker('picker-trim', 'hex-trim', 'trim');
+            bindColorPicker('picker-rib', 'hex-rib', 'rib');
+            bindColorPicker('picker-stripe', 'hex-stripe', 'stripe');
+
+            // File Upload
+            const fileInput = document.getElementById('file-input-logo');
+            const uploadZoneSelect = document.getElementById('upload-zone-select');
+
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadZoneSelect.addEventListener('change', loadUploadAdjustValues);
+
+            document.getElementById('input-img-scale').addEventListener('input', (e) => {
+                const zone = uploadZoneSelect.value;
+                const val = parseInt(e.target.value);
+                state.uploads[zone].scale = val / 100;
+                document.getElementById('val-img-scale').innerText = `${val}%`;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-img-pos-y').addEventListener('input', (e) => {
+                const zone = uploadZoneSelect.value;
+                const val = parseInt(e.target.value);
+                state.uploads[zone].posY = val;
+                document.getElementById('val-img-pos-y').innerText = val;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-img-pos-x').addEventListener('input', (e) => {
+                const zone = uploadZoneSelect.value;
+                const val = parseInt(e.target.value);
+                state.uploads[zone].posX = val;
+                document.getElementById('val-img-pos-x').innerText = val;
+                updateAllTextures();
+            });
+
+            // Text Controls
+            const zoneSelect = document.getElementById('text-zone-select');
+            zoneSelect.addEventListener('change', loadTextEditorValues);
+
+            document.getElementById('input-text-val').addEventListener('input', (e) => {
+                const zone = zoneSelect.value;
+                state.texts[zone].text = e.target.value;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-font-family').addEventListener('change', (e) => {
+                const zone = zoneSelect.value;
+                state.texts[zone].font = e.target.value;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-text-color').addEventListener('input', (e) => {
+                const zone = zoneSelect.value;
+                state.texts[zone].color = e.target.value;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-stroke-color').addEventListener('input', (e) => {
+                const zone = zoneSelect.value;
+                state.texts[zone].stroke = e.target.value;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-font-size').addEventListener('input', (e) => {
+                const zone = zoneSelect.value;
+                const val = parseInt(e.target.value);
+                state.texts[zone].size = val;
+                document.getElementById('val-font-size').innerText = `${val}px`;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-text-arc').addEventListener('change', (e) => {
+                const zone = zoneSelect.value;
+                state.texts[zone].arc = e.target.checked;
+                updateAllTextures();
+            });
+
+            document.getElementById('input-text-pos-y').addEventListener('input', (e) => {
+                const zone = zoneSelect.value;
+                state.texts[zone].posY = parseInt(e.target.value);
+                updateAllTextures();
+            });
+
+            // Action Buttons
+            document.getElementById('btn-reset').addEventListener('click', resetToBlankState);
+            document.getElementById('btn-export-spec').addEventListener('click', openSpecModal);
+            document.getElementById('btn-export-2d').addEventListener('click', export2DFullSheet);
+
+            loadTextEditorValues();
+            loadUploadAdjustValues();
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const zone = document.getElementById('upload-zone-select').value;
+                    state.uploads[zone].img = img;
+                    state.uploads[zone].name = file.name;
+                    state.uploads[zone].scale = 1.0;
+                    state.uploads[zone].posX = 0;
+                    state.uploads[zone].posY = 0;
+
+                    loadUploadAdjustValues();
+                    updateAllTextures();
+
+                    showToast(`'${file.name}' 마크 이미지가 성공적으로 업로드되었습니다.`);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeUploadedImage() {
+            const zone = document.getElementById('upload-zone-select').value;
+            state.uploads[zone].img = null;
+            state.uploads[zone].name = '';
+            loadUploadAdjustValues();
+            updateAllTextures();
+            showToast('이미지가 삭제되었습니다.');
+        }
+
+        function loadUploadAdjustValues() {
+            const zone = document.getElementById('upload-zone-select').value;
+            const data = state.uploads[zone];
+            const panel = document.getElementById('image-adjust-panel');
+
+            if (data.img) {
+                panel.classList.remove('hidden');
+                document.getElementById('uploaded-filename').innerText = data.name || 'uploaded_image';
+                document.getElementById('input-img-scale').value = Math.round((data.scale || 1.0) * 100);
+                document.getElementById('val-img-scale').innerText = `${Math.round((data.scale || 1.0) * 100)}%`;
+                document.getElementById('input-img-pos-y').value = data.posY || 0;
+                document.getElementById('val-img-pos-y').innerText = data.posY || 0;
+                document.getElementById('input-img-pos-x').value = data.posX || 0;
+                document.getElementById('val-img-pos-x').innerText = data.posX || 0;
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function bindColorPicker(pickerId, hexId, key) {
+            const picker = document.getElementById(pickerId);
+            const hexInput = document.getElementById(hexId);
+
+            const handlePickerChange = (e) => {
+                const color = e.target.value;
+                if (hexInput) hexInput.value = color.toUpperCase();
+                setColor(key, color, false);
+            };
+
+            if (picker) {
+                picker.addEventListener('input', handlePickerChange);
+                picker.addEventListener('change', handlePickerChange);
+            }
+
+            if (hexInput) {
+                hexInput.addEventListener('change', (e) => {
+                    let val = e.target.value.trim();
+                    if (!val.startsWith('#')) val = '#' + val;
+                    if (/^#[0-9A-F]{6}$/i.test(val)) {
+                        setColor(key, val, true);
+                    }
+                });
+            }
+        }
+
+        function setColor(key, colorHex, updatePicker = true) {
+            state.colors[key] = colorHex;
+
+            if (updatePicker) {
+                if (key === 'body') document.getElementById('picker-body').value = colorHex;
+                if (key === 'sleeves') document.getElementById('picker-sleeves').value = colorHex;
+                if (key === 'trim') document.getElementById('picker-trim').value = colorHex;
+                if (key === 'rib') document.getElementById('picker-rib').value = colorHex;
+                if (key === 'stripe') document.getElementById('picker-stripe').value = colorHex;
+            }
+
+            const hexEl = document.getElementById(`hex-${key}`);
+            if (hexEl) hexEl.value = colorHex.toUpperCase();
+
+            updateAllTextures();
+        }
+
+        function loadTextEditorValues() {
+            const zone = document.getElementById('text-zone-select').value;
+            const data = state.texts[zone];
+
+            document.getElementById('input-text-val').value = data.text || '';
+            document.getElementById('input-font-family').value = data.font;
+            document.getElementById('input-text-color').value = data.color;
+            document.getElementById('input-stroke-color').value = data.stroke;
+            document.getElementById('input-font-size').value = data.size;
+            document.getElementById('val-font-size').innerText = `${data.size}px`;
+            document.getElementById('input-text-arc').checked = !!data.arc;
+            document.getElementById('input-text-pos-y').value = data.posY || 0;
+        }
+
+        function resetToBlankState() {
+            setUniformType('hoodie');
+            setColor('body', '#1E293B');
+            setColor('sleeves', '#1E293B');
+            setColor('trim', '#FFFFFF');
+            setColor('rib', '#1E293B');
+            setColor('stripe', '#38BDF8');
+
+            Object.keys(state.texts).forEach(k => state.texts[k].text = '');
+            Object.keys(state.uploads).forEach(k => {
+                state.uploads[k].img = null;
+                state.uploads[k].name = '';
+            });
+
+            loadTextEditorValues();
+            loadUploadAdjustValues();
+            updateAllTextures();
+            showToast('초기화되었습니다.');
+        }
+
+        function openSpecModal() {
+            const modal = document.getElementById('spec-modal');
+            const content = document.getElementById('spec-modal-content');
+
+            let typeName = state.uniformType === 'hoodie' ? '후드 집업' : state.uniformType === 'jersey' ? '카라 져지' : '아노락 플리스';
+
+            let html = `
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                    <div class="text-sky-600 font-bold mb-1">[ 동복 생활복 의상 스타일 ]</div>
+                    <div>• 디자인 형태: <strong>${typeName}</strong></div>
+                </div>
+
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                    <div class="text-sky-600 font-bold mb-1">[ 부위별 원단 HEX 컬러코드 ]</div>
+                    <div>• 몸통 (Main Fabric): <span style="color:${state.colors.body}">■</span> ${state.colors.body}</div>
+                    <div>• 소매/배색 (Sleeves): <span style="color:${state.colors.sleeves}">■</span> ${state.colors.sleeves}</div>
+                    <div>• 지퍼/트림 (Zipper/Trim): <span style="color:${state.colors.trim}">■</span> ${state.colors.trim}</div>
+                    <div>• 시보리 밴딩 (Ribbing): <span style="color:${state.colors.rib}">■</span> ${state.colors.rib}</div>
+                    <div>• 스포츠 파이핑 라인 (Stripe): <span style="color:${state.colors.stripe}">■</span> ${state.colors.stripe}</div>
+                </div>
+
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                    <div class="text-sky-600 font-bold mb-1">[ 학교명 / 자수 문구 내역 ]</div>
+            `;
+
+            let hasText = false;
+            Object.keys(state.texts).forEach(key => {
+                const item = state.texts[key];
+                if (item.text) {
+                    hasText = true;
+                    html += `<div>• <strong>${key}</strong>: "${item.text}" (${item.size}px)</div>`;
+                }
+            });
+            if (!hasText) html += `<div class="text-slate-400">• 입력된 자수 문구가 없습니다.</div>`;
+
+            html += `</div><div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                    <div class="text-sky-600 font-bold mb-1">[ 부착 학교 엠블럼/로고 파일 ]</div>`;
+
+            let hasUpload = false;
+            Object.keys(state.uploads).forEach(key => {
+                const item = state.uploads[key];
+                if (item.img) {
+                    hasUpload = true;
+                    html += `<div>• <strong>${key}</strong>: ${item.name} (크기: ${Math.round(item.scale*100)}%)</div>`;
+                }
+            });
+            if (!hasUpload) html += `<div class="text-slate-400">• 부착된 로고 이미지 파일이 없습니다.</div>`;
+
+            html += `</div>`;
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSpecModal() {
+            document.getElementById('spec-modal').classList.add('hidden');
+        }
+
+        function copySpecToClipboard() {
+            const text = document.getElementById('spec-modal-content').innerText;
+            navigator.clipboard.writeText(text);
+            showToast('제작 사양서 내용이 클립보드에 복사되었습니다.');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-x-full');
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        window.onload = function () {
+            initUIEvents();
+            render2DFlatMockups();
+        };
+    </script>
+</body>
+</html>
